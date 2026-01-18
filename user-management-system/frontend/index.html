@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Shop - User Accounts</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>User management</h1>
+        <div style="text-align: right; margin-bottom: 20px;">
+            <div id="currentUser" style="font-weight: 600; color: #333; margin-bottom: 5px;"></div>
+            <button id="logoutBtn" class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+
+        <hr style="margin-top: 90px;">
+
+        <div class="section">
+            <h2>Users</h2>
+
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Actions</th>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Created at</th>
+                        <th>Roles</th>
+                    </tr>
+                </thead>
+                <tbody id="usersBody">
+                </tbody>
+            </table>
+
+            <div id="usersMessage"></div>
+        </div>
+
+        <div class="section">
+            <h2>Create user</h2>
+
+            <form id="userForm" onsubmit="createUser(event)">
+                <label>Username:</label>
+                <input type="text" id="username" required>
+
+                <label>Email:</label>
+                <input type="email" id="email" required>
+
+                <label>Password:</label>
+                <input type="password" id="password" required>
+
+                <label>Street:</label>
+                <input id="street">
+
+                <label>House number:</label>
+                <input id="house_number">
+
+                <label>City:</label>
+                <input id="city">
+
+                <label>Postal code:</label>
+                <input id="postal_code">
+
+                <label>Country:</label>
+                <input id="country">
+
+                <label>Mobile:</label>
+                <input id="mobile">
+
+                <label>Role:</label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <select id="createRole" required>
+                        <option value="1">Administrator</option>
+                        <option value="2">Manager</option>
+                        <option value="3">Regular user</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Create user</button>
+            </form>
+
+            <div id="createResult"></div>
+
+            <hr>
+        </div>
+       
+        <div id="assignRoleSection" class="section">
+            <h2>Assign role</h2>
+
+            <form id="roleForm" onsubmit="assignRole(event)">
+                <label>User:</label>
+                <select id="roleUserSelect">
+                    <option value="">Select user...</option>
+                </select>
+
+                <label>Role to add:</label>
+                <select id="roleSelect">
+                    <option value="1">Administrator</option>
+                    <option value="2">Manager</option>
+                    <option value="3">Regular user</option>
+                </select>
+
+                <button type="submit" class="btn">Assign role</button>
+            </form>
+
+            <div id="roleResult"></div>
+
+            <hr>
+        </div>
+
+        <div class="section">
+            <h2>Check user permissions</h2>
+
+            <div>
+                <label>User:</label>
+                <select id="permUserSelect">
+                    <option value="">Select user...</option>
+                </select>
+                <button onclick="loadUserPermissions()" class="btn">Show permissions</button>
+            </div>
+            <div id="userPermissions" style="
+                margin-top: 15px;
+                background:#f8f9fa; 
+                border-radius:10px; 
+                padding:16px; 
+                min-height:80px;
+            ">
+                Select user to view permissions
+            </div>
+
+            <hr>
+        </div>
+
+        <div id="auditSection" class="section">
+            <h2>Audit log (last 50)</h2>
+            <button onclick="loadAuditLog()" class="btn">Load audit log</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Table</th>
+                        <th>Operation</th>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Changed at</th>
+                    </tr>
+                </thead>
+                <tbody id="auditBody">
+                    <tr>
+                        <td colspan="6">Click "Load audit log" to display data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="userModal" class="modal">
+            <div class="modal-content">
+                <button class="btn btn-small" onclick="closeUserModal()" style="float:right;">Close</button>
+                <h2>User details</h2>
+
+                <div id="userDetailsBox" class="details-box">
+                    <div><b>ID:</b> <span id="detailId"></span></div>
+                    <div><b>Username:</b> <span id="detailUsername"></span></div>
+                    <div><b>Email:</b> <span id="detailEmail"></span></div>
+                    <div><b>Status:</b> <span id="detailStatus"></span></div>
+                    <div><b>Created at:</b> <span id="detailCreated"></span></div>
+                    <div><b>Updated at:</b> <span id="detailUpdated"></span></div>
+                    <div><b>Address:</b> <span id="detailAddress"></span></div>
+
+                    <div class="form-group">
+                        <label><strong>Profile Picture:</strong></label>
+                        <div>
+                            <img id="userDetailProfilePic" src="" alt="Profile Picture"
+                                style="max-width: 150px; display: none; margin-bottom: 10px;">
+                            <div id="noProfilePic" style="display: none; color: #999;">No profile picture</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:12px;"><b>Roles:</b></div>
+                    <ul id="detailRoles"></ul>
+
+                    <div style="margin-top:12px;"><b>Metadata:</b></div>
+                    <div id="detailMetadata"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <button class="btn btn-small" onclick="closeEditModal()" style="float:right;">Close</button>
+                <h2>Edit user</h2>
+
+                <form id="editModalForm" onsubmit="submitEditModal(event)">
+                    <input type="hidden" id="editUserId">
+
+                    <label>Username:</label>
+                    <input type="text" id="editUsername">
+
+                    <label>Email:</label>
+                    <input type="email" id="editEmail">
+
+                    <label>Status:</label>
+                    <select id="editStatus">
+                        <option value="">(no change)</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="SUSPENDED">SUSPENDED</option>
+                        <option value="PENDING">PENDING</option>
+                    </select>
+
+                    <div class="form-group">
+                        <label for="editProfilePic">Upload Profile Picture:</label>
+                        <input type="file" id="editProfilePic" accept="image/*">
+                        <button type="button" onclick="uploadProfilePicture()" style="margin-top: 10px;">Upload</button>
+                        <button type="button" onclick="deleteProfilePicture()"
+                            style="margin-top: 10px; background: #dc3545;">Delete Picture</button>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="submit" class="btn">Update user</button>
+                    </div>
+                </form>
+
+                <div id="editResult"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
