@@ -30,21 +30,22 @@ INSERT INTO users (username, email, password_hash, status, is_active, address) V
  ROW('Pavlinska', '2', 'Varaždin', '42000', 'Hrvatska')::address_type),
 
 ('manager', 'manager@company.hr',
- '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5NU0zLhOyJiLu',
+ '$2b$12$ImnAaLBrmd7ltc4nbrACYep2i3LdKbDvYK6VDCZM.ZBd2VgTAQUha',
  'ACTIVE', TRUE,
  ROW('Trg Slobode', '10', 'Varaždin', '42000', 'Hrvatska')::address_type),
 
 ('user1', 'user1@company.hr',
- '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5NU0zLhOyJiLu',
+ '$2b$12$ImnAaLBrmd7ltc4nbrACYep2i3LdKbDvYK6VDCZM.ZBd2VgTAQUha',
  'ACTIVE', TRUE,
  ROW('Hallerova aleja', '5', 'Varaždin', '42000', 'Hrvatska')::address_type);
 
 INSERT INTO user_roles (user_id, role_id, assigned_by) VALUES
-(1, 1, 1),  -- admin -> Administrator
-(2, 2, 1),  -- manager -> Manager
-(3, 3, 1);  -- user1 -> Regular User
+(1, 1, 1),  
+(2, 2, 1),  
+(3, 3, 1); 
 
 INSERT INTO user_custom_metadata (user_id, meta_key, meta_value) VALUES
 (3, 'department', 'IT'),
 (3, 'position', 'Junior Developer'),
 (3, 'employee_id', 'EMP001');
+
